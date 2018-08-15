@@ -27,6 +27,7 @@ import com.alibaba.otter.canal.instance.manager.model.CanalParameter.MetaMode;
 import com.alibaba.otter.canal.instance.manager.model.CanalParameter.SourcingType;
 import com.alibaba.otter.canal.instance.manager.model.CanalParameter.StorageMode;
 import com.alibaba.otter.canal.instance.manager.model.CanalParameter.StorageScavengeMode;
+import com.alibaba.otter.canal.meta.FileMixedMetaManager;
 import com.alibaba.otter.canal.meta.MemoryMetaManager;
 import com.alibaba.otter.canal.meta.PeriodMixedMetaManager;
 import com.alibaba.otter.canal.meta.ZooKeeperMetaManager;
@@ -120,6 +121,11 @@ public class CanalInstanceWithManager extends AbstractCanalInstance {
             ZooKeeperMetaManager zooKeeperMetaManager = new ZooKeeperMetaManager();
             zooKeeperMetaManager.setZkClientx(getZkclientx());
             ((PeriodMixedMetaManager) metaManager).setZooKeeperMetaManager(zooKeeperMetaManager);
+        } else if (mode.isLocalFile()) {
+            FileMixedMetaManager fileMixedMetaManager = new FileMixedMetaManager();
+            fileMixedMetaManager.setDataDir(parameters.getDataDir());
+            fileMixedMetaManager.setPeriod(parameters.getMetaFileFlushPeriod());
+            metaManager = fileMixedMetaManager;
         } else {
             throw new CanalException("unsupport MetaMode for " + mode);
         }

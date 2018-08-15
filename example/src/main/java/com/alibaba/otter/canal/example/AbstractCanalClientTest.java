@@ -97,6 +97,7 @@ public class AbstractCanalClientTest {
                 process();
             }
         });
+
         thread.setUncaughtExceptionHandler(handler);
         running = true;
         thread.start();
