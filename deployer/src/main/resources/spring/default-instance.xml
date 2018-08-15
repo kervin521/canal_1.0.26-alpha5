@@ -83,6 +83,10 @@
 		<property name="eventStore" ref="eventStore" />
 		<property name="filterTransactionEntry" value="${canal.instance.filter.transaction.entry:false}"/>
 	</bean>
+	
+        <bean id ="zooKeeperLogPositionManager" class="com.alibaba.otter.canal.parse.index.ZooKeeperLogPositionManager">
+		<constructor-arg ref="zkClientx"/>
+	</bean>
 
 	<bean id="eventParser" class="com.alibaba.otter.canal.parse.inbound.mysql.MysqlEventParser">
 		<property name="destination" value="${canal.instance.destination}" />
@@ -130,8 +134,17 @@
 		<property name="logPositionManager">
 			<bean class="com.alibaba.otter.canal.parse.index.FailbackLogPositionManager">
 				<constructor-arg>
-					<bean class="com.alibaba.otter.canal.parse.index.MemoryLogPositionManager" />
-				</constructor-arg>
+				  <bean class="com.alibaba.otter.canal.parse.index.PeriodMixedLogPositionManager">
+				      <constructor-arg>
+					    <bean class="com.alibaba.otter.canal.parse.index.MemoryLogPositionManager">
+					    </bean>
+					  </constructor-arg>
+					  <constructor-arg ref="zooKeeperLogPositionManager"/>
+					  <constructor-arg type ="long">
+					  <value>1000</value>
+					  </constructor-arg>
+				 </bean>
+			   </constructor-arg>
 				<constructor-arg>
 					<bean class="com.alibaba.otter.canal.parse.index.MetaLogPositionManager">
 						<constructor-arg ref="metaManager"/>
