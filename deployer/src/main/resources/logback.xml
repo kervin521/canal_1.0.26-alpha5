@@ -61,6 +61,27 @@
 		</sift>
 	</appender>
 	
+	<appender name="STDERR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>../logs/server_error.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>../logs/%d{yyyy-MM-dd}/server_error-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{56} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<logger name="com.alibaba.otter.canal.instance" additivity="false">  
+        <level value="ERROR" />  
+        <appender-ref ref="STDERR" />
+    </logger>
+
     <logger name="com.alibaba.otter.canal.instance" additivity="false">  
         <level value="INFO" />  
         <appender-ref ref="CANAL-ROOT" />
